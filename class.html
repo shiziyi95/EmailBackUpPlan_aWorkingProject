@@ -1,0 +1,97 @@
+<html>
+<head>
+<style>
+#navi{
+	width:20%;
+	height:800pt;
+	position:absolute;
+	left:0;
+}
+#content{
+	width:80%;
+	height:800pt;
+	position:absolute;
+	right:0;
+}
+#banner{
+}
+</style>
+<script
+src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+</script>
+<script src="./day.js"></script>
+<script>
+function getclass(){
+var URL = "http://localhost:8080/getclass";
+	$.ajax({type: "GET",url: URL,
+	data: {},
+	dataType: "html",
+	success: function(msg) {
+		msg=JSON.parse(msg);
+		var ul="<ul>";
+		for(var i=0;i<msg.length;i++) {
+			if(isday(msg[i].day)){
+				ul+='<li>';
+				ul +=" <input type=\"button\" value=\"send\" onclick=\"send(\'";
+				ul +=msg[i].classid;
+				ul +="\')\">"
+				ul +=msg[i].time;
+				ul+= " "
+				ul +=msg[i].name;
+				ul +='</a></li>';
+			}
+        };
+        ul+="</ul>"
+        $("#content").html(ul);
+        
+	}
+	,error: function (xhr, ajaxOptions, thrownError) {
+		$("#content").html("error");
+	}
+});
+}
+function editclass(){
+	var URL = "http://localhost:8080/editclass2";
+	$.ajax({type: "GET",url: URL,
+	data: {},
+	dataType: "html",
+	success: function(msg) {
+		
+	}
+	,error: function (xhr, ajaxOptions, thrownError) {
+		$("#content").html("error");
+	}	
+});
+}
+function send(classid){
+	var URL = "http://localhost:8080/sendemail";
+	$.ajax({type: "GET",url: URL,
+	data: {id:classid},
+	dataType: "html",
+	success: function(msg) {
+		window.location.href = msg;
+	}
+	,error: function (xhr, ajaxOptions, thrownError) {
+		$("#content").html("error");
+	}
+});
+}
+
+
+</script>
+</head>
+<body onload = "getclass()">
+<div id="banner">
+<h1>coming up:</h1>
+</div>
+<div id ="navi">
+<ul id ="naviul">
+<li><div id = "userinfo">user info</div></li>
+<li><div id = "edituser"><input type="button" value="edit user" onclick="editclass()"></div></li>
+<li><div id = "editclass"><form action="/editclass2" method="post"><input type="submit" value="edit user"></form></div></li>
+</ul>
+</div>
+<div id = "content">
+</div>
+</body>
+</html>

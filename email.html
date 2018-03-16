@@ -1,0 +1,46 @@
+<HTML>
+    <head>
+        <h1>Something</h1>
+    </head>
+    <body>
+        <input type="button" onClick="sendEmail()" value="SEND">
+        <div id="output"></div>
+    
+        
+        <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
+        
+        <script type="text/javascript">
+
+            function sendEmail()
+            {
+                var div = document.getElementById("output")
+                var mailto = "mailto:" + "ziyidrexel@gmail.com"
+                var subject = "?subject="+ escape("insert JSON thing here something[Might be only one][subject], like I am missing class today")
+                var body = "&body="+ escape("This was sent via the e-mail stuff that I created")  // NO MORE THAN 2K CHARACTERS
+                var link = mailto + subject + body;
+
+                div.innerHTML += "Sent"
+                window.location.href = link;
+                /*
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8080/data",
+                    data: "[]",
+                    dataType: "JSON",
+                    
+                    success: function(something){
+                        //This will open your e-mail provider and send the e-mail.
+                        var mailto = "mailto:" + "INSERT PROFESSOR AJAX NAME"
+                        var subject = "?subject="+ escape("insert JSON thing here something[Might be only one][subject], like I am missing class today")
+                        var body = "&body="+ escape(div.innerHTML+= "insert JSON thing for body, something[LOOK FOR THE CURRENT POSITION][body]") // NO MORE THAN 2K CHARACTERS
+                        var link = mailto + subject + body;
+
+                        window.location.href = link;
+                    }
+                });
+                */
+            }
+        </script>
+    </body>
+</HTML>
+

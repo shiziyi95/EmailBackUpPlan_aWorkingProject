@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>JavaScript Functions</h1>
+
+<p>This example calls a function which performs a calculation, and returns the result:</p>
+
+<p id="demo"></p>
+
+<script>
+function isday(n){
+	var d = new Date();
+	var c = d.getDay();
+	var day = parseInt(n);
+	if(c==0 || c ==6){
+		c=1;
+	}
+	for(var i=4;i>=0;i--){
+		if(day>=Math.pow(2,i)){
+			day-=Math.pow(2,i);
+			alert(i);
+			if(c==i || c-1==i){
+				return true;
+			}
+		}
+	}
+	return false;
+}
+function test(n){
+	if(isday(n)){
+    	return "yes";
+    }else{
+    	return "no"
+    }
+}
+document.getElementById("demo").innerHTML = test(8);
+</script>
+
+</body>
+</html>

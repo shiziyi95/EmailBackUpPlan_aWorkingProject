@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>EBP</title>
+<style type="text/css">
+#parent {
+	height: 450px;
+ 	width: 400px;
+ 	background: #eee;
+ 	margin: auto;
+	margin-top:8%;
+	position:relative;
+}
+#loginbox {
+	width: 60%;
+	height:70%;
+	margin: auto;
+	position:absolute;
+	margin-top:auto;
+	margin-left:90px;
+}
+#parent #loginbox #button {
+	width:30%;
+	margin-left: 35%;
+}
+#parent #loginbox img {
+	height: 200px;
+	width: 200px;
+	margin-left: 20px;
+	margin-top: 5%;
+}
+</style>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  
+</head>
+
+<body style="background:#DBD999">
+<div id="parent">
+<div id="loginbox">
+<img src="logo.png"/> 
+<br />
+<form  action="/login" method="post">
+  <label for="username">email</label>
+  <input type="text" name="name" placeholder= "email" class="form-control" value=""/>
+  <br/>
+  <label for="Password">Password</label>
+  <input type="password" name="pass" placeholder = "password" class="form-control" value=""/>
+</p>
+<br/>
+<input id="button" type="submit" class="btn btn-info" value="sign in"/>
+</form>
+</div>
+</div>
+
+
+
+<p id= "output"></p>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+  </script>
+<script>
+ 
+ function login(){
+	var name = document.getElementById("username");
+	var password =document.getElementById("password");
+	var URL = "http://localhost:8080/login?name="+name.value+"&pass="+password.value ;
+	$.ajax({
+		type: "GET",
+			url: URL,
+			data: {},
+			dataType: "html",
+			success : function(msg){
+
+			}
+	})
+ }
+
+ 
+
+</script>
+</body>
+</html>

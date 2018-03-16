@@ -1,0 +1,171 @@
+<html>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  
+<script
+src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+</script>
+
+<script src="./day.js"></script>
+<script>
+var selectedid=-1;
+function getclass(){
+var URL = "http://localhost:8080/getclass";
+	$.ajax({type: "GET",url: URL,
+	data: {},
+	dataType: "html",
+	success: function(msg) {
+		msg=JSON.parse(msg);
+		var ul="<div>";
+		for(var i=0;i<msg.length;i++) {
+			ul+='<h4>';
+			ul +="  <input type=\"radio\" name=\"classradio\" value=\"";
+			ul +=msg[i].classid;
+			ul +="\">";
+			ul +=msg[i].time;
+			ul+=itoday(msg[i].day);
+			ul+="<br/>"
+			ul +=msg[i].name;
+			ul += "<br/>";
+			ul +="<strong>" + msg[i].instructor + " : </strong>" ;
+			ul += '  '
+			ul+=msg[i].email;
+			ul+='</h4>';
+        };
+        ul+="</div>"
+        $("#content").html(ul);
+	}
+	,error: function (xhr, ajaxOptions, thrownError) {
+		$("#content").html("error");
+	}
+});
+}
+
+function createform(){
+	var f="<form name=\"myForm\" onsubmit=\"subm()\" action=\"/subm\" method=\"post\">";
+	f+="class name: <input type=\"text\" name=\"classname\" class=\"form-control\" id=\"classname\"><br/>";
+	f+="instructor name: <input type=\"text\" name=\"instructor\" class=\"form-control\" id=\"instructor\"><br/>";
+	f+="instructor email: <input type=\"text\" name=\"email\" class=\"form-control\" id=\"email\"><br/>";
+	f+="class time:<input type=\"text\" name=\"time\" placeholder=\"hours\" class=\"form-control\" id=\'time\'>:<input type=\"text\" name=\"time2\"  placeholder=\"minutes\" class=\"form-control\" id=\'time2\'><br/>";
+	f+="day: M<input type=\"checkbox\" id=\"M\" >";
+	f+=" T<input type=\"checkbox\" id=\"T\" >";
+	f+=" W<input type=\"checkbox\" id=\"W\" >";
+	f+=" R<input type=\"checkbox\" id=\"R\" >";
+	f+=" F<input type=\"checkbox\" id=\"F\" ><br/>";
+	f+="<input type=\"submit\" value=\"Submit\" onclick=\"subm()\" class=\"btn btn-success\">";
+	f+="<input type=\"hidden\" name=\"day\" value=\"\" id=\'day\'>";
+	f+="<input type=\"hidden\" name=\"selectedid\" value=\"-1\" id=\'selected\'>";
+	f+="</form><input type=\"button\" onclick=\"back()\" value=\"back\" class=\"btn btn-default\">";
+	$("#content").html(f);
+}
+
+function subm(){
+	var d=0;
+	if(document.getElementById("M").checked){
+		d+=1;
+	}
+	if(document.getElementById("T").checked){
+		d+=2;
+	}
+	if(document.getElementById("W").checked){
+		d+=4;
+	}
+	if(document.getElementById("R").checked){
+		d+=8;
+	}
+	if(document.getElementById("F").checked){
+		d+=16;
+	}
+	$("#day").val(d);
+	$("#selected").val(selectedid);
+}
+
+function back(){
+	location.reload();
+}
+function add(){
+	selectedid=-1;
+	createform();
+}
+
+
+function edit(){
+	var a=0;
+	var radio = document.getElementsByName('classradio');
+	for(var i = 0; i < radio.length; i++){
+		if(radio[i].checked){
+			a = radio[i].value;
+		}
+	}
+	if(a==0){
+		selectedid=-1;
+		alert("you have to select a class to edit");
+	}else{
+		selectedid=a;
+		createform();
+		loadinfo();
+	}
+}
+function loadinfo(){
+	var URL = "http://localhost:8080/selectedid";
+	$.ajax({type: "GET",url: URL,
+	data: {classid:selectedid},
+	dataType: "html",
+	success: function(msg) {
+		msg=JSON.parse(msg);
+		$("#classname").val(msg[0].name);
+		$("#instructor").val(msg[0].instructor);
+		$("#email").val(msg[0].email);
+		var t=msg[0].time;
+		t=t.split(":");
+		$("#time").val(t[0]);
+		$("#time2").val(t[1]);
+		var day=itoday(msg[0].day);
+		if(day.includes("M")){
+			$("#M").prop("checked",true);
+		}
+		if(day.includes("T")){
+			$("#T").prop("checked",true);
+		}
+		if(day.includes("W")){
+			$("#W").prop("checked",true);
+		}
+		if(day.includes("R")){
+			$("#R").prop("checked",true);
+		}
+		if(day.includes("F")){
+			$("#F").prop("checked",true);
+		}
+	}
+	,error: function (xhr, ajaxOptions, thrownError) {
+		$("#content").html("error");
+	}
+});
+} 	
+
+</script>
+</head>
+<body onLoad="getclass()" style="background:#E0FFFF">
+<div class="page-header" style="background-color:#67E9B8; height:100px ">
+<h1 class="text-center" style="font-size:60px; font-family:Tahoma, Geneva, sans-serif">
+Edit Class
+</h1>
+</div>
+<div id ="navi" class="container">
+<div class="row">
+<div class="col-md-2" >
+<div class="btn-group-vertical" role="group" aria-label="...">
+<input type="button" id="back" value="add class" onClick="add()" class="btn btn-info">
+<input type="button" id="back" value="edit class" onClick="edit()" class="btn btn-info">
+<form action="/class2" method="post"><input type="submit" id="back" value="back" onClick="toclass()" class="btn btn-info"></form>
+</div>
+</div>
+<div id = "content" class="col-md-10" >
+</div>
+
+</div>
+</div>
+</body>
+</html>

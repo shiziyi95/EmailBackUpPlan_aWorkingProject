@@ -1,0 +1,98 @@
+<html>
+<head>
+<style>
+
+</style>
+<script
+src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+</script>
+<script src="./day.js"></script>
+<script>
+function getclass(){
+var URL = "http://localhost:8080/getclass";
+	$.ajax({type: "GET",url: URL,
+	data: {},
+	dataType: "html",
+	success: function(msg) {
+		msg=JSON.parse(msg);
+		var ul="<div>";
+		for(var i=0;i<msg.length;i++) {
+			if(isday(msg[i].day)){
+				ul +='<h4>';
+				ul +=" <input type=\"button\" value=\"send\" onclick=\"send(\'";
+				ul +=msg[i].classid;
+				ul +="\')\" class=\"btn btn-primary\">"
+				ul +=" <strong> "
+				ul +="<mark>" + msg[i].name + "</mark>";
+				ul += " on "
+				var t = msg[i].time;
+				t=t.split(":");
+				ul +=t[0];
+				ul+=":";
+				ul+=t[1];
+				ul +='</strong></h4>';
+			}
+        };
+        ul+="</div>"
+        $("#content").html(ul);
+        
+	}
+	,error: function (xhr, ajaxOptions, thrownError) {
+		$("#content").html("error");
+	}
+});
+}
+function editclass(){
+	var URL = "http://localhost:8080/editclass2";
+	$.ajax({type: "GET",url: URL,
+	data: {},
+	dataType: "html",
+	success: function(msg) {
+		
+	}
+	,error: function (xhr, ajaxOptions, thrownError) {
+		$("#content").html("error");
+	}
+});
+}
+function send(classid){
+	var URL = "http://localhost:8080/sendemail";
+	$.ajax({type: "GET",url: URL,
+	data: {id:classid},
+	dataType: "html",
+	success: function(msg) {
+		window.location.href = msg;
+	}
+	,error: function (xhr, ajaxOptions, thrownError) {
+		$("#content").html("error");
+	}
+});
+}
+
+
+</script>
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  
+</head>
+<body onload = "getclass()" style="background:#E0FFFF">
+<div id="banner" class="jumbotron text-center">
+<h1>COMING UP</h1>
+<p>your next class</p>
+</div>
+<div id ="navi" class="container">
+<div class="row">
+<div class="col-sm-2">
+
+<div id = "editclass">
+<form action="/editclass2" method="post"><input type="submit" class="btn btn-info" value="Edit class"/></form></div>
+</div>
+<div id = "content" class="col-sm-10">
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

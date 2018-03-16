@@ -1,0 +1,182 @@
+<html>
+<head>
+<style>
+#navi{
+	width:20%;
+	height:800pt;
+	position:absolute;
+	left:0;
+	background-color:#8888ff;
+}
+#content{
+	width:80%;
+	height:800pt;
+	position:absolute;
+	right:0;
+	background-color:#88ff88;
+}
+#banner{
+	background-color:#faa;
+}
+</style>
+<script
+src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+</script>
+<script src="./day.js"></script>
+<script>
+var selectedid=-1;
+function getclass(){
+var URL = "http://localhost:8080/getclass";
+	$.ajax({type: "GET",url: URL,
+	data: {},
+	dataType: "html",
+	success: function(msg) {
+		msg=JSON.parse(msg);
+		var ul="<ul>";
+		for(var i=0;i<msg.length;i++) {
+			ul+='<li>';
+			ul +="  <input type=\"radio\" name=\"classradio\" value=\"";
+			ul +=msg[i].id;
+			ul +="\">";
+			ul +=msg[i].time;
+			ul+=itoday(msg[i].day);
+			ul+="<br/>"
+			ul +=msg[i].name;
+			ul += "<br/>";
+			ul +=msg[i].instructor;
+			ul+=msg[i].email;
+			ul+='</li>';
+        };
+        ul+="</ul>"
+        $("#content").html(ul);
+	}
+	,error: function (xhr, ajaxOptions, thrownError) {
+		$("#content").html("error");
+	}
+});
+}
+
+function createform(){
+	var f="<form name=\"myForm\" onsubmit=\"subm()\" action=\"/subm\" method=\"post\">";
+	f+="class name: <input type=\"text\" name=\"classname\"><br/>";
+	f+="instructor name: <input type=\"text\" name=\"instructor\"><br/>";
+	f+="instructor email: <input type=\"text\" name=\"email\"><br/>";
+	f+="class time:<input type=\"text\" name=\"time\">:<input type=\"test\" name=\"time2\"><br/>";
+	f+="day: M<input type=\"checkbox\" name=\"M\">";
+	f+="T<input type=\"checkbox\" name=\"T\">";
+	f+="W<input type=\"checkbox\" name=\"W\">";
+	f+="R<input type=\"checkbox\" name=\"R\">";
+	f+="F<input type=\"checkbox\" name=\"F\"><br/>";
+	f+="<input type=\"submit\" value=\"Submit\" onclick=\"subm()\">";
+	f+="<input type=\"hidden\" name=\"day\" value=\"\">";
+	f+="<input type=\"hidden\" name=\"selectedid\" value=\"-1\">";
+	f+="</form><input type=\"button\" onclick=\"back()\" value=\"back\">";
+	$("#content").html(f);
+}	
+
+function subm(){
+	var d=0;
+	if(document.getElementById("M").checked){
+		d+=16;
+	}
+	if(document.getElementById("T").checked){
+		d+=8;
+	}
+	if(document.getElementById("W").checked){
+		d+=4;
+	}
+	if(document.getElementById("R").checked){
+		d+=2;
+	}
+	if(document.getElementById("F").checked){
+		d+=1;
+	}
+	$("#day").val(d);
+	$("#selected").val(selectedid);
+}
+
+function back(){
+	location.reload();
+}
+function add(){
+	selectedid=-1;
+	createform();
+}
+
+
+function edit(){
+
+	var a=0;
+	var radio = document.getElementsByName('classradio');
+	for(var i = 0; i < radio.length; i++){
+		if(radio[i].checked){
+			alert(radio[i].value);
+			a = radio[i].value;
+		}
+	}
+	if(a==0){
+		selectedid=-1;
+		alert("you have to select a class to edit");
+	}else{
+		selectedid=a;
+		alert(selectedid);
+		createform();
+		loadinfo();
+	}
+}
+function loadinfo(){
+	var URL = "http://localhost:8080/selectedid";
+	$.ajax({type: "GET",url: URL,
+	data: {"classid":selectedid},
+	dataType: "html",
+	success: function(msg) {
+		alert(msg[0].name);		
+		msg=JSON.parse(msg);
+
+		$("#name").val("abc");
+		$("#instructor").val(msg[0].instructor);
+		$("#email").val(msg[0].email);
+		var t=msg[0].time;
+		$("#time").val(t[0]);
+		$("#time2").val(t[1]);
+		var day=itoday(msg[0].day);
+		if(day.includes("M")){
+			$("#M").prop("checked",true);
+		}
+		if(day.includes("T")){
+			$("#T").prop("checked",true);
+		}
+		if(day.includes("W")){
+			$("#W").prop("checked",true);
+		}
+		if(day.includes("R")){
+			$("#R").prop("checked",true);
+		}
+		if(day.includes("F")){
+			$("#F").prop("checked",true);
+		}
+	}
+	,error: function (xhr, ajaxOptions, thrownError) {
+		$("#content").html("error");
+	}
+});
+}
+
+</script>
+</head>
+<body onload="getclass()">
+<div id="banner">
+<h1>edit class:</h1>
+</div>
+<div id ="navi">
+<ul id ="naviul">
+<li><div id = "userinfo"></div></li>
+<li><input type="button" id="back" value="add class" onclick="add()"></li>
+<li><input type="button" id="back" value="edit class" onclick="edit()"></li>
+<li><form action="/class2" method="post"><input type="submit" id="back" value="back"></form></li>
+</ul>
+</div>
+<div id = "content">
+</div>
+</body>
+</html>
